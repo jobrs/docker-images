@@ -98,18 +98,6 @@ case $1 in
             exit 1
         fi
 
-        if [[ "x$CONNECT_CONFIG_STORAGE_TOPIC" = "x" ]]; then
-            echo "The CONFIG_STORAGE_TOPIC variable must be set to the name of the topic where connector configurations will be stored."
-            echo "This topic must have a single partition and be highly replicated (e.g., 3x or more)."
-            exit 1
-        fi
-
-        if [[ "x$CONNECT_OFFSET_STORAGE_TOPIC" = "x" ]]; then
-            echo "The OFFSET_STORAGE_TOPIC variable must be set to the name of the topic where connector offsets will be stored."
-            echo "This topic should have many partitions (e.g., 25 or 50) and be highly replicated (e.g., 3x or more)."
-            exit 1
-        fi
-
         echo "Using the following environment variables:"
         echo "      GROUP_ID=$CONNECT_GROUP_ID"
         echo "      CONFIG_STORAGE_TOPIC=$CONNECT_CONFIG_STORAGE_TOPIC"
