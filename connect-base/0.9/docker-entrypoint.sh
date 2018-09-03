@@ -158,7 +158,7 @@ case $1 in
             exit 1           
         if
         if grep -q "offset\.storage\.topic" $KAFKA_HOME/config/connect-distributed.properties; then
-            echo "The offset.storage.topic property or the CONFIG_OFFSET_TOPIC variable must be set to the name of the"
+            echo "The offset.storage.topic property or the OFFSET_STORAGE_TOPIC variable must be set to the name of the"
             echo "topic where connector configurations will be stored."
             echo "This topic should have many partitions (e.g., 25 or 50) and be highly replicated (e.g., 3x or more)."
             exit 1           
