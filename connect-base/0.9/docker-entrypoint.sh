@@ -151,6 +151,19 @@ case $1 in
           fi
         done
 
+        if grep -q "config\.storage\.topic" $KAFKA_HOME/config/connect-distributed.properties; then
+            echo "The config.storage.topic property or the CONFIG_STORAGE_TOPIC variable must be set to the name of the"
+            echo "topic where connector configurations will be stored."
+            echo "This topic must have a single partition and be highly replicated (e.g., 3x or more)."
+            exit 1           
+        if
+        if grep -q "offset\.storage\.topic" $KAFKA_HOME/config/connect-distributed.properties; then
+            echo "The offset.storage.topic property or the CONFIG_OFFSET_TOPIC variable must be set to the name of the"
+            echo "topic where connector configurations will be stored."
+            echo "This topic should have many partitions (e.g., 25 or 50) and be highly replicated (e.g., 3x or more)."
+            exit 1           
+        if
+
         #
         # Execute the Kafka Connect distributed service, replacing this shell process with the specified program ...
         #        
