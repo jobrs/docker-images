@@ -32,8 +32,12 @@ export CONNECT_REST_PORT=$REST_PORT
 export CONNECT_REST_HOST_NAME=$HOST_NAME
 export CONNECT_BOOTSTRAP_SERVERS=$BOOTSTRAP_SERVERS
 export CONNECT_GROUP_ID=$GROUP_ID
-export CONNECT_CONFIG_STORAGE_TOPIC=$CONFIG_STORAGE_TOPIC
-export CONNECT_OFFSET_STORAGE_TOPIC=$OFFSET_STORAGE_TOPIC
+if [[ ! -z "$CONFIG_STORAGE_TOPIC" ]]; then
+  export CONNECT_CONFIG_STORAGE_TOPIC=$CONFIG_STORAGE_TOPIC
+fi
+if [[ ! -z "$OFFSET_STORAGE_TOPIC" ]]; then
+  export CONNECT_OFFSET_STORAGE_TOPIC=$OFFSET_STORAGE_TOPIC
+fi
 export CONNECT_KEY_CONVERTER=$KEY_CONVERTER
 export CONNECT_VALUE_CONVERTER=$VALUE_CONVERTER
 export CONNECT_INTERNAL_KEY_CONVERTER=$INTERNAL_KEY_CONVERTER
@@ -98,18 +102,6 @@ case $1 in
             exit 1
         fi
 
-        if [[ "x$CONNECT_CONFIG_STORAGE_TOPIC" = "x" ]]; then
-            echo "The CONFIG_STORAGE_TOPIC variable must be set to the name of the topic where connector configurations will be stored."
-            echo "This topic must have a single partition and be highly replicated (e.g., 3x or more)."
-            exit 1
-        fi
-
-        if [[ "x$CONNECT_OFFSET_STORAGE_TOPIC" = "x" ]]; then
-            echo "The OFFSET_STORAGE_TOPIC variable must be set to the name of the topic where connector offsets will be stored."
-            echo "This topic should have many partitions (e.g., 25 or 50) and be highly replicated (e.g., 3x or more)."
-            exit 1
-        fi
-
         echo "Using the following environment variables:"
         echo "      GROUP_ID=$CONNECT_GROUP_ID"
         echo "      CONFIG_STORAGE_TOPIC=$CONNECT_CONFIG_STORAGE_TOPIC"
@@ -162,6 +154,19 @@ case $1 in
             fi
           fi
         done
+
+        if ! grep -q "config\.storage\.topic" $KAFKA_HOME/config/connect-distributed.properties; then
+            echo "The config.storage.topic property or the CONFIG_STORAGE_TOPIC variable must be set to the name of the"
+            echo "topic where connector configurations will be stored."
+            echo "This topic must have a single partition and be highly replicated (e.g., 3x or more)."
+            exit 1
+        fi
+        if ! grep -q "offset\.storage\.topic" $KAFKA_HOME/config/connect-distributed.properties; then
+            echo "The offset.storage.topic property or the OFFSET_STORAGE_TOPIC variable must be set to the name of the"
+            echo "topic where connector configurations will be stored."
+            echo "This topic should have many partitions (e.g., 25 or 50) and be highly replicated (e.g., 3x or more)."
+            exit 1
+        fi
 
         #
         # Execute the Kafka Connect distributed service, replacing this shell process with the specified program ...
